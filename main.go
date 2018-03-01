@@ -15,7 +15,7 @@ func main() {
 		panic(err)
 	}
 
-	cb := func(buf *cm160.Record) {
+	Send := func(buf *cm160.Record) {
 		fmt.Println(buf)
 
 		var t time.Time
@@ -32,6 +32,13 @@ func main() {
 		}
 	}
 
-	monitor := cm160.Open()
-	monitor.Wait(cb)
+	device := cm160.Open()
+	for {
+		if record := device.Read(); record != nil {
+			Send(record)
+		}
+		if !device.IsRunning() {
+			break
+		}
+	}
 }
